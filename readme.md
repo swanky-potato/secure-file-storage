@@ -1,3 +1,3 @@
 # Secure File Storage 
-A Golang package to enable to encrypt files securely on the file system.
-Also decrypt them ofcourse later when needed
+A Golang package to enable to encrypt text based files securely on the file system.
+Think of json or yaml data or other non-binary data that needs to be stored securly but simple

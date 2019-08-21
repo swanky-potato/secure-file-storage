@@ -6,7 +6,7 @@ var ChecksumStore = ""
 // SecretStore is location where to store the encrypted files
 var SecretStore = ""
 
-// Store will create and write a encrypted file to filesystem to the given location/filemane return error on fail else nil
+// Store a file on storage and generates a checksum it will return if fails it will return nil, err
 func Store(data []byte, filename string, passphrase string) ([]byte, error) {
 	// create new checksum for encrypted file
 	checksum, err := createChecksum(data)
@@ -24,7 +24,7 @@ func Store(data []byte, filename string, passphrase string) ([]byte, error) {
 	return checksum, nil
 }
 
-// Exists trys to find the file checksum and encrypted file exists when file is not found it returns false
+// Exists checks if both the checksum and encrypted file exist on the configured storage.
 func Exists(filename string) bool {
 	if c := checkFileExists(filename); c != true {
 		return c
@@ -35,38 +35,49 @@ func Exists(filename string) bool {
 	return true
 }
 
-// CheckFileIsValid takes the stored checksum and dycrypts the file check if the checksum still matches the file.
-// return a error when there is a missmatch
-func CheckFileIsValid(filename, passphrase string) error {
+// ValidateFileStored takes the stored checksum and dycrypts the file check if the checksum still matches the data
+func ValidateFileStored(filename, passphrase string) error {
 	d, err := readFile(filename, passphrase)
 	if err != nil {
 		return err
 	}
-	if err := checkChecksum(d, filename); err != nil {
+	if err := checkChecksumOnStorage(d, filename); err != nil {
 		return err
 	}
 	return nil
 }
 
-// Read will return decrypted content of the file or returns a error
+// ValidateFileWithChecksum takes a checksum string and checks if the decrypted data stored still matched with this checksum
+func ValidateFileWithChecksum(checksum, filename, passphrase string) error {
+	d, err := readFile(filename, passphrase)
+	if err != nil {
+		return err
+	}
+	if err := checkChecksumFromInput(d, checksum); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Read will return decrypted content of the file or return a error
 func Read(filename, passphrase string) ([]byte, error) {
 	d, err := readFile(filename, passphrase)
 	if err != nil {
 		return nil, err
 	}
-	if err := checkChecksum(d, filename); err != nil {
+	if err := checkChecksumOnStorage(d, filename); err != nil {
 		return nil, err
 	}
 	return d, nil
 }
 
-// Remove only deletes the file of storage after decyption passes else return err
+// Remove only deletes the file of storage but only if you are able to decrypt it correctly
 func Remove(filename, passphrase string) error {
 	d, err := readFile(filename, passphrase)
 	if err != nil {
 		return err
 	}
-	if err := checkChecksum(d, filename); err != nil {
+	if err := checkChecksumOnStorage(d, filename); err != nil {
 		return err
 	}
 	if err := removeFile(filename, passphrase); err != nil {

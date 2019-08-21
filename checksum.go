@@ -16,7 +16,7 @@ func createChecksum(data []byte) ([]byte, error) {
 	return chsm, nil
 }
 
-func checkChecksum(data []byte, filename string) error {
+func checkChecksumOnStorage(data []byte, filename string) error {
 	cs, err := createChecksum(data)
 	if err != nil {
 		return err
@@ -28,7 +28,18 @@ func checkChecksum(data []byte, filename string) error {
 	if string(cs) == string(fs) {
 		return nil
 	}
-	return errors.New("Checksum check failed")
+	return errors.New("Checksum stored does not match data")
+}
+
+func checkChecksumFromInput(data []byte, checksum string) error {
+	cs, err := createChecksum(data)
+	if err != nil {
+		return err
+	}
+	if string(cs) == checksum {
+		return nil
+	}
+	return errors.New("Checksum given does not match the data")
 }
 
 func checksumFileExists(filename string) bool {
