@@ -7,13 +7,7 @@
             "@semantic-release/changelog",
             {
                 "changelogFile": "CHANGELOG.md",
-                "changelogTitle": "# Semantic Versioning Changelog"
-            }
-        ],
-        [
-            "@semantic-release/exec",
-            {
-                "prepareCmd": "./prepare-release.sh ${nextRelease.version}"
+                "changelogTitle": "# Auto generated Changelog"
             }
         ],
         [
@@ -25,14 +19,7 @@
             }
         ],
         [
-            "@semantic-release/github",
-            {
-                "assets": [
-                    {
-                        "path": "dist/**"
-                    }
-                ]
-            }
+            "@semantic-release/github", {}
         ]
     ]
 }

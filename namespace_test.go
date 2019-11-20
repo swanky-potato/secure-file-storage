@@ -10,7 +10,7 @@ var testStorage = "/Users/steven/Projects/Golang/src/github.com/SionX/secure-fil
 func TestAddNamespace(t *testing.T) {
 	StorageLocation = testStorage
 	nsin := Namespace{Path: "nsx", GID: 1}
-	if err := AddNamespace(nsin); err != nil {
+	if err := nsin.Create(); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -30,7 +30,7 @@ func TestGetNamespace(t *testing.T) {
 func TestUpdateNamespace(t *testing.T) {
 	StorageLocation = testStorage
 	nscheck := Namespace{Path: "nsx", GID: 2}
-	if err := UpdateNamespace(nscheck); err != nil {
+	if err := nscheck.Update(); err != nil {
 		t.Fatal(err)
 	}
 	ns, err := GetNamespace("nsx")
@@ -48,7 +48,7 @@ func TestRemoveNamespace(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := RemoveNamespace(ns); err != nil {
+	if err := ns.Delete(); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -66,7 +66,7 @@ func TestNamespaceMap(t *testing.T) {
 	nsadd = append(nsadd, Namespace{Path: "nsx/b/a", GID: 1})
 
 	for _, ns := range nsadd {
-		if err := AddNamespace(ns); err != nil {
+		if err := ns.Create(); err != nil {
 			t.Error(err)
 		}
 		spacescheck = append(spacescheck, ns)
@@ -87,7 +87,7 @@ func TestNamespaceMap(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if err := RemoveNamespace(ns); err != nil {
+	if err := ns.Delete(); err != nil {
 		t.Error(err)
 	}
 }
